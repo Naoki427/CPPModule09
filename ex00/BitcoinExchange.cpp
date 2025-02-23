@@ -135,7 +135,7 @@ bool BitcoinExchange::checkDay(std::string month,std::string day) {
         return false;
     if((month_num == 2 || month_num == 4 || month_num == 6 || month_num == 9 || month_num == 11) && day_num == 31)
         return false;
-    if(month_num == 2 && (day_num == 30 || day_num == 29))
+    if(month_num == 2 && (day_num == 30))
         return false;
     return true;
 }
