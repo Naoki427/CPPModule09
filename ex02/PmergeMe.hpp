@@ -5,7 +5,13 @@
 #include <climits>
 #include <algorithm> 
 #define INVALID_ARG 1
-#define OVERFLOW 2
+#define UINBT_OVERFLOW 2
+
+
+struct Data{
+    unsigned int id;
+    unsigned int value;
+};
 
 class PmergeMe
 {
@@ -23,4 +29,7 @@ public:
 	int power(int base, int exponent);
 	void vectorSort(std::vector<unsigned int> &vec);
 	void insertVectorElement(std::vector<unsigned int>& vec, unsigned int element, int left, int right);
+	void initValueV(std::vector<unsigned int>::iterator start,std::vector<unsigned int>::iterator end, std::vector<Data>& vec);
+	void swapBigSmallV(unsigned int &big, unsigned int &small);
+	int getSmallIndexV(unsigned int value, const std::vector<Data>& small);
 };
