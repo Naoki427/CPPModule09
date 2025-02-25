@@ -25,16 +25,16 @@ std::stack<int> RPN::getStack() const {
 void RPN::Calculate(std::string input){
 	if(input.empty())
 		throw std::runtime_error("Input cannot be an empty line.");
+	char last;
 	for (std::string::iterator it = input.begin(); it != input.end(); it++) {
 		if (std::isspace(*it))
 			continue ;
+		last = (*it);
 		if (std::isdigit(*it))
 			_stack.push((*it) - '0');
 		else {
 			if (*it != '+' && *it != '-' && *it != '/' && *it != '*')
 				throw std::runtime_error("Error: Input contains unexpected characters.");
-			if(_stack.size() != 2)
-				throw std::runtime_error("Error: A syntax error has occurred.");
 			if(*it == '+') {
 				if(this->add())
 					throw std::runtime_error("Error: Integer overflow occurred.");
@@ -53,6 +53,10 @@ void RPN::Calculate(std::string input){
 			}
 		}
 	}
+	if(_stack.size() != 1)
+		throw std::runtime_error("Error: A syntax error has occurred.");
+	if(std::isdigit(last))
+		throw std::runtime_error("Error: A syntax error has occurred.");
 	std::cout << _stack.top() << std::endl;
 	_stack.pop();
 }
