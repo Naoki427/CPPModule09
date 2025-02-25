@@ -5,7 +5,11 @@ int main(int argc, char **argv) {
 		std::cerr << "Incorrect number of arguments." << std::endl;
 		return 1;
 	}
-	PmergeMe pm(argc,argv);
-	pm.diplay();
+	try {
+		PmergeMe pm(argc,argv);
+		pm.diplay();
+	} catch (std::runtime_error &e) {
+		std::cerr << e.what() << std::endl;
+	}
 	return 0; 
 }

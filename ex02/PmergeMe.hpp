@@ -7,6 +7,7 @@
 #include <ctime>
 #define INVALID_ARG 1
 #define UINBT_OVERFLOW 2
+#define INCLUDE_ZERO 3
 
 
 struct Data{
@@ -29,6 +30,7 @@ public:
 	int isNumber(char *arg);
 	int power(int base, int exponent);
 	void swapBigSmall(unsigned int &big, unsigned int &small);
+	int checkDuplicate(std::vector<unsigned int> &vec);
 
 	void vectorInit(int argc,char *argv[]);
 	void initValueV(std::vector<unsigned int>::iterator start,std::vector<unsigned int>::iterator end, std::vector<Data>& vec);
