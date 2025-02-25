@@ -14,8 +14,12 @@ RPN::~RPN() {
 RPN& RPN::operator= (const RPN &origin){
 	if(this == &origin)
 		return *this;
-	
+	_stack = origin.getStack();
 	return *this;
+}
+
+std::stack<int> RPN::getStack() const {
+	return _stack;
 }
 
 void RPN::Calculate(std::string input){

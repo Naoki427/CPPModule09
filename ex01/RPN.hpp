@@ -12,6 +12,7 @@ public:
 	RPN(const RPN &origin);
 	virtual ~RPN();
 	RPN& operator = (const RPN &origin);
+	std::stack<int> getStack() const;
 	void Calculate(std::string input);
 	int add();
 	int subtract();

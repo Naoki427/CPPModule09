@@ -17,8 +17,17 @@ PmergeMe::~PmergeMe() {
 PmergeMe& PmergeMe::operator= (const PmergeMe &origin){
 	if(this == &origin)
 		return *this;
-	
+	_deque = origin.getDeque();
+    _vector = origin.getVector();
 	return *this;
+}
+
+std::deque<unsigned int> PmergeMe::getDeque() const {
+    return _deque;
+}
+
+std::vector<unsigned int> PmergeMe::getVector() const {
+    return _vector;
 }
 
 void PmergeMe::diplay() {

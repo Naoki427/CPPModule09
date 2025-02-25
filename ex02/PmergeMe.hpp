@@ -18,14 +18,16 @@ struct Data{
 class PmergeMe
 {
 private:
-	PmergeMe( void );
-public:
 	std::deque<unsigned int> _deque;
 	std::vector<unsigned int> _vector;
+	PmergeMe( void );
+public:
 	PmergeMe(int argc,char *argv[]);
 	PmergeMe(const PmergeMe &origin);
 	virtual ~PmergeMe();
 	PmergeMe& operator = (const PmergeMe &origin);
+	std::deque<unsigned int> getDeque() const;
+	std::vector<unsigned int> getVector() const;
 
 	int isNumber(char *arg);
 	int power(int base, int exponent);
