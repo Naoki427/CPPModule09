@@ -18,7 +18,7 @@ RPN& RPN::operator= (const RPN &origin){
 	return *this;
 }
 
-std::stack<int> RPN::getStack() const {
+std::stack<int, std::list<int> > RPN::getStack() const {
 	return _stack;
 }
 
@@ -26,31 +26,32 @@ void RPN::Calculate(std::string input){
 	if(input.empty())
 		throw std::runtime_error("Input cannot be an empty line.");
 	char last;
+	bool space = true;
 	for (std::string::iterator it = input.begin(); it != input.end(); it++) {
-		if (std::isspace(*it))
+		if (std::isspace(*it)) {
+			space = true;
 			continue ;
+		} else {
+			if(space == false)
+				throw std::runtime_error("Error: The input must be space-separated.");
+			space = false;
+		}
 		last = (*it);
 		if (std::isdigit(*it))
 			_stack.push((*it) - '0');
 		else {
 			if (*it != '+' && *it != '-' && *it != '/' && *it != '*')
 				throw std::runtime_error("Error: Input contains unexpected characters.");
-			if(*it == '+') {
-				if(this->add())
-					throw std::runtime_error("Error: Integer overflow occurred.");
-			}
-			if(*it == '-') {
-				if(this->subtract())
-					throw std::runtime_error("Error: Integer overflow occurred.");
-			}
-			if(*it == '/') {
-				if(this->mod())
-					throw std::runtime_error("Error: Division by zero is not allowed.");
-			}
-			if(*it == '*') {
-				if(this->multiply())
-					throw std::runtime_error("Error: Integer overflow occurred.");
-			}
+			else if (_stack.size() < 2)
+				throw std::runtime_error("Error: A syntax error has occurred.");
+			if(*it == '+')
+				this->add();
+			else if(*it == '-')
+				this->subtract();
+			else if(*it == '/')
+				this->mod();
+			else if(*it == '*')
+				this->multiply();
 		}
 	}
 	if(_stack.size() != 1)
@@ -61,54 +62,52 @@ void RPN::Calculate(std::string input){
 	_stack.pop();
 }
 
-int RPN::add(){
+void RPN::add(){
 	int first = _stack.top();
 	_stack.pop();
 	int second = _stack.top();
 	_stack.pop();
 	if(INT_MAX - second < first)
-		return 1;
+		throw std::runtime_error("Error: Integer overflow occurred.");
 	int result = first + second;
 	_stack.push(result);
-	return 0;
 }
 
-int RPN::subtract(){
+void RPN::subtract(){
 	int first = _stack.top();
 	_stack.pop();
 	int second = _stack.top();
 	_stack.pop();
 	if(INT_MIN + first > second)
-		return 1;
+		throw std::runtime_error("Error: Integer overflow occurred.");
 	int result = second - first;
 	_stack.push(result);
-	return 0;
 }
 
-int RPN::mod(){
+void RPN::mod(){
 	int first = _stack.top();
 	_stack.pop();
 	int second = _stack.top();
 	_stack.pop();
 	if(first == 0)
-		return 1;
+		throw std::runtime_error("Error: Division by zero is not allowed.");
+	if(second == INT_MIN && first == -1)
+		throw std::runtime_error("Error: Division of INT_MIN by -1.");
 	int result = second / first;
 	_stack.push(result);
-	return 0;
 }
 
-int RPN::multiply(){
+void RPN::multiply(){
 	int first = _stack.top();
 	_stack.pop();
 	int second = _stack.top();
 	_stack.pop();
 	if(first == 0) {
 		_stack.push(0);
-		return 0;
+		return;
 	}
 	if(INT_MAX / first < second || INT_MIN / first > second)
-		return 1;
+		throw std::runtime_error("Error: Integer overflow occurred.");
 	int result = first * second;
 	_stack.push(result);
-	return 0;
 }
