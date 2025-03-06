@@ -23,7 +23,7 @@ public:
 	double getRate(std::string date);
 	bool checkDate(std::string date);
 	bool checkYear(std::string year);
-	bool checkDay(std::string month,std::string day);
+	bool checkDay(std::string month,std::string day,std::string year);
 	bool checkValue(std::string value);
 	bool checkNum(std::string num);
 	bool checkDoubleNum(std::string num);

@@ -66,7 +66,7 @@ void BitcoinExchange::Exchange(char * file_name) {
                         continue;
                     }
                     std::cout << date << "=>" << value << " = ";
-                    std::cout <<  rate * std::stod(value,NULL) << std::endl;
+                    std::cout <<  rate * std::strtod(value.c_str(),NULL) << std::endl;
                 } else {
                     std::cerr << "Error: Invalid value format." << std::endl;
                     continue;
@@ -81,7 +81,7 @@ void BitcoinExchange::Exchange(char * file_name) {
 
 double BitcoinExchange::getRate(std::string date)
 {
-    date.pop_back();
+    date = date.substr(0, date.size() - 1);
     std::map<std::string, double>::iterator it = _data.find(date);
     if(it == _data.end()) {
         _data[date] = 0;
@@ -106,7 +106,7 @@ bool BitcoinExchange::checkDate(std::string date) {
         return false;
     if(!std::getline(s,day,'-'))
         return false;
-    if(!checkYear(year) || !checkDay(month,day))
+    if(!checkYear(year) || !checkDay(month,day,year))
         return false;
     return true;
 }
@@ -120,7 +120,7 @@ bool BitcoinExchange::checkYear(std::string year) {
     return true;
 }
 
-bool BitcoinExchange::checkDay(std::string month,std::string day) {
+bool BitcoinExchange::checkDay(std::string month,std::string day,std::string year) {
     if(month.length() != 2 || !checkNum(month))
         return false;
     if(day.length() != 3 || day[2] != ' ')
@@ -129,6 +129,7 @@ bool BitcoinExchange::checkDay(std::string month,std::string day) {
         return false;
     int month_num = std::atoi(month.c_str());
     int day_num = std::atoi(day.c_str());
+    int year_num = std::atoi(year.c_str());
     if(month_num < 1 || month_num > 12)
         return false;
     if(day_num < 1 || month_num > 31)
@@ -136,6 +137,8 @@ bool BitcoinExchange::checkDay(std::string month,std::string day) {
     if((month_num == 2 || month_num == 4 || month_num == 6 || month_num == 9 || month_num == 11) && day_num == 31)
         return false;
     if(month_num == 2 && (day_num == 30))
+        return false;
+    if(!(year_num % 4 == 0 && (year_num % 100 != 0 || year_num % 400 == 0)) && month_num == 2 && day_num == 29)
         return false;
     return true;
 }
@@ -145,7 +148,7 @@ bool BitcoinExchange::checkValue(std::string value) {
         std::cerr << "Error: The input is not a valid numeric value." << std::endl;
         return false;
     }
-    double value_num = std::stod(value);
+    double value_num = std::strtod(value.c_str(),NULL);
     if (value_num < 1) {
         std::cerr << "Error: not a positive number." << std::endl;
         return false;
