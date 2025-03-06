@@ -79,12 +79,6 @@ int PmergeMe::power(int base, int exponent) {
     return result;
 }
 
-void PmergeMe::swapBigSmall(unsigned int &big, unsigned int &small) {
-	unsigned int tmp = small;
-	small = big;
-	big = tmp;
-}
-
 int PmergeMe::checkDuplicate(std::vector<unsigned int> &vec) {
 	for (size_t i = 0; i < vec.size(); i++){
 		for (size_t j = i + 1; j < vec.size(); j++){
@@ -118,15 +112,21 @@ void PmergeMe::vectorSort(std::vector<unsigned int> &vec) {
 	int half = vec_size / 2;
 	std::vector<unsigned int> big(half);
 	std::vector<Data> small(vec_size - half);
-	std::copy(vec.begin(), vec.begin() + half, big.begin());
-	initValueV(vec.begin() + half, vec.end(), small);
-	for(int i = 0; i < half; i++) {
-		if(big[i] < small[i].value)
-			swapBigSmall(big[i],small[i].value);
-		small[i].id = big[i];
-	}
+    for (int i = 0, j = 0; i < vec_size - 1; i+=2, j++)
+    {
+        if(vec[i] < vec[i + 1]) {
+            big[j] = vec[i + 1];
+            small[j].value = vec[i];
+            small[j].id = big[j];
+        } else {
+            big[j] = vec[i];
+            small[j].value = vec[i + 1];
+            small[j].id = big[j];
+        }
+    }
 	if(vec_size % 2 == 1) {
 		small[half].id = 0;
+        small[half].value = vec.back();
 	}
 	vectorSort(big);
 	vec.clear();
@@ -169,14 +169,6 @@ void PmergeMe::insertVectorElement(std::vector<unsigned int>& vec,unsigned  int 
     }
 }
 
-
-void PmergeMe::initValueV(std::vector<unsigned int>::iterator start,std::vector<unsigned int>::iterator end, std::vector<Data>& vec) {
-	for (size_t i = 0; start != end; ++start, ++i) {
-		vec[i].value = *start;
-	}
-}
-
-
 int PmergeMe::getSmallIndexV(unsigned int value, const std::vector<Data>& small) {
     for (size_t i = 0; i < small.size(); ++i) {
         if (small[i].id == value) {
@@ -209,16 +201,22 @@ void PmergeMe::dequeSort(std::deque<unsigned int> &deq) {
     int half = deq_size / 2;
     std::deque<unsigned int> big(half);
     std::deque<Data> small(deq_size - half);
-    std::copy(deq.begin(), deq.begin() + half, big.begin());
-    initValueD(deq.begin() + half, deq.end(), small);
-    for(int i = 0; i < half; i++) {
-        if(big[i] < small[i].value)
-            swapBigSmall(big[i], small[i].value);
-        small[i].id = big[i];
+    for (int i = 0, j = 0; i < deq_size - 1; i+=2, j++)
+    {
+        if(deq[i] < deq[i + 1]) {
+            big[j] = deq[i + 1];
+            small[j].value = deq[i];
+            small[j].id = big[j];
+        } else {
+            big[j] = deq[i];
+            small[j].value = deq[i + 1];
+            small[j].id = big[j];
+        }
     }
-    if(deq_size % 2 == 1) {
-        small[half].id = 0;
-    }
+	if(deq_size % 2 == 1) {
+		small[half].id = 0;
+        small[half].value = deq.back();
+	}
     dequeSort(big);
     deq.clear();
     deq.insert(deq.end(), big.begin(), big.end());
@@ -259,12 +257,6 @@ void PmergeMe::insertDequeElement(std::deque<unsigned int>& deq, unsigned int el
     }
 }
 
-void PmergeMe::initValueD(std::deque<unsigned int>::iterator start, std::deque<unsigned int>::iterator end, std::deque<Data>& deq) {
-    for (size_t i = 0; start != end; ++start, ++i) {
-        deq[i].value = *start;
-    }
-}
-
 int PmergeMe::getSmallIndexD(unsigned int value, const std::deque<Data>& small) {
     for (size_t i = 0; i < small.size(); ++i) {
         if (small[i].id == value) {
@@ -291,15 +283,22 @@ int PmergeMe::findLeftD(std::deque<unsigned int>& deq, unsigned int value) {
 // 	int half = vec_size / 2;
 // 	std::vector<unsigned int> big(half);
 // 	std::vector<Data> small(vec_size - half);
-// 	std::copy(vec.begin(), vec.begin() + half, big.begin());
-// 	initValueV(vec.begin() + half, vec.end(), small);
-// 	for(int i = 0; i < half; i++) {
-// 		if(big[i] < small[i].value)
-// 			swapBigSmall(big[i],small[i].value);
-// 		small[i].id = big[i];
-// 	}
+// 	for (int i = 0, j = 0; i < vec_size - 1; i+=2, j++)
+//     {
+//         std::cout << "compare " << vec[i] << " with " << vec[i + 1] << std::endl;
+//         if(vec[i] < vec[i + 1]) {
+//             big[j] = vec[i + 1];
+//             small[j].value = vec[i];
+//             small[j].id = big[j];
+//         } else {
+//             big[j] = vec[i];
+//             small[j].value = vec[i + 1];
+//             small[j].id = big[j];
+//         }
+//     }
 // 	if(vec_size % 2 == 1) {
 // 		small[half].id = 0;
+//         small[half].value = vec.back();
 // 	}
 // 	vectorSort(big);
 // 	vec.clear();
